@@ -16,7 +16,7 @@ st.set_page_config(
 # =========================================
 
 if "estoque" not in st.session_state:
-    st.session_state.estoque = 500
+    st.session_state.estoque = 257
     st.session_state.orcamento = 9000
     st.session_state.perdas = 243
     st.session_state.dia = 1
