@@ -18,14 +18,14 @@ st.set_page_config(
 if "estoque" not in st.session_state:
     st.session_state.estoque = 500
     st.session_state.orcamento = 15000
-    st.session_state.perdas = 0
+    st.session_state.perdas = 243
     st.session_state.dia = 1
 
     st.session_state.transportadoras = {
-        "Carcará": 0,
-        "Trend": 0,
-        "IJ transporte": 0,
-        "Frota propria": 0
+        "Carcará": 87,
+        "Trend": 54,
+        "IJ transporte": 63,
+        "Frota propria": 39
     }
 
 clientes = [
@@ -235,15 +235,120 @@ if divida > 0:
     ] -= devolvidos
 
 # =========================================
-# GAME OVER
+# CONDIÇÕES DE VITÓRIA E DERROTA
 # =========================================
 
+total_divida = sum(
+    st.session_state.transportadoras.values()
+)
+
+# DERROTA 1 — ESTOQUE
 if st.session_state.estoque <= 0:
 
-    st.error("💀 GAME OVER")
+    st.error("💀 GAME OVER — FALTA DE PALETS")
 
     st.write("""
-    A fábrica parou por falta de pallets.
+    A fábrica parou completamente.
 
-    O gerente está completamente surtado.
+    Caminhões estão aguardando carga.
+
+    O gerente entrou em colapso psicológico.
     """)
+
+    st.stop()
+
+# DERROTA 2 — ORÇAMENTO
+if st.session_state.orcamento <= 0:
+
+    st.error("💸 GAME OVER — FALÊNCIA OPERACIONAL")
+
+    st.write("""
+    A empresa ficou sem verba para comprar pallets.
+
+    Diretoria culpou você imediatamente.
+    """)
+
+    st.stop()
+
+# DERROTA 3 — AUDITORIA
+if st.session_state.perdas >= 400:
+
+    st.error("📋 GAME OVER — AUDITORIA REPROVADA")
+
+    st.write("""
+    Auditoria identificou descontrole operacional grave.
+
+    Sumiram pallets demais.
+
+    Alguém vai rodar nessa história.
+    """)
+
+    st.stop()
+
+# DERROTA 4 — COLAPSO LOGÍSTICO
+if total_divida >= 700:
+
+    st.error("🚚 GAME OVER — COLAPSO LOGÍSTICO")
+
+    st.write("""
+    Transportadoras acumulam pallets demais.
+
+    O pátio virou um caos absoluto.
+    """)
+
+    st.stop()
+
+# =========================================
+# VITÓRIA
+# =========================================
+
+if (
+    st.session_state.dia >= 20
+    and st.session_state.perdas < 100
+    and st.session_state.estoque > 80
+):
+
+    st.success("🏆 OPERAÇÃO RECUPERADA")
+
+    st.write("""
+    Você conseguiu recuperar o controle operacional.
+
+    As perdas foram reduzidas.
+
+    A auditoria aprovou os resultados.
+
+    Pela primeira vez em anos o setor de pallets
+    não está pegando fogo.
+    """)
+
+    # RANK FINAL
+
+    st.subheader("📊 AVALIAÇÃO FINAL")
+
+    if st.session_state.perdas <= 50:
+
+        rank = "S"
+
+        status = "Lenda dos Pallets"
+
+    elif st.session_state.perdas <= 80:
+
+        rank = "A"
+
+        status = "Especialista Operacional"
+
+    else:
+
+        rank = "B"
+
+        status = "Sobreviveu ao inferno"
+
+    st.write(f"RANK: {rank}")
+
+    st.write(f"STATUS: {status}")
+
+    st.write(f"PERDAS FINAIS: {st.session_state.perdas}")
+
+    st.write(f"ESTOQUE FINAL: {st.session_state.estoque}")
+
+    st.stop()
